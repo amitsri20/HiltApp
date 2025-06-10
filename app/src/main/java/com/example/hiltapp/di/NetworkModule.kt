@@ -1,6 +1,6 @@
 package com.example.hiltapp.di
 
-import com.example.hiltapp.network.ApiService
+import com.example.hiltapp.data.api.ApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,7 +16,7 @@ import javax.inject.Singleton
 object NetworkModule {
 
     @Provides
-    fun provideBaseUrl(): String = "https://jsonplaceholder.typicode.com/" // replace accordingly
+    fun provideBaseUrl(): String = "https://rickandmortyapi.com/api/" // replace accordingly
 
     @Provides
     @Singleton

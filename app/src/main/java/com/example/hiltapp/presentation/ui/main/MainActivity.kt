@@ -1,14 +1,13 @@
-package com.example.hiltapp.ui
+package com.example.hiltapp.presentation.ui.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import com.example.hiltapp.network.ApiService
-import com.example.hiltapp.ui.components.UserScreen
-import com.example.hiltapp.ui.theme.HiltAppTheme
-import com.example.hiltapp.ui.viewmodels.MyViewModel
+import com.example.hiltapp.data.api.ApiService
+import com.example.hiltapp.presentation.ui.components.MainScreen
+import com.example.hiltapp.presentation.ui.theme.HiltAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -18,14 +17,14 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var apiService: ApiService
 
-    private val userViewModel: MyViewModel by viewModels()
+    private val userViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             HiltAppTheme {
-                UserScreen(userViewModel)
+                MainScreen(userViewModel)
             }
         }
     }
