@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hiltapp.data.repository.MyRepository
 import com.example.hiltapp.domain.models.Character
+import com.example.hiltapp.presentation.ui.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,27 +18,36 @@ class MainViewModel @Inject constructor(
     private val myRepository: MyRepository
 ) : ViewModel() {
 
-    private val _data = MutableStateFlow<List<Character>>(emptyList())
-    val data: StateFlow<List<Character>> = _data.asStateFlow()
+    private val _uiState = MutableStateFlow<UiState<List<Character>>>(UiState.Loading)
+    val uiState: StateFlow<UiState<List<Character>>> = _uiState.asStateFlow()
+
+    var currentData = mutableListOf<Character>()
 
     private var currentPage = 1
-    public var isLoading = false
     init {
         loadData()
     }
 
     fun loadData() {
-        if (isLoading) return
-        isLoading = true
+        _uiState.value = UiState.Loading
 
         viewModelScope.launch {
             try {
+                if (_uiState.value is UiState.Loading) {
+                    // Show full-screen loader on initial load
+                } else {
+                    // For subsequent pages
+                    _uiState.update {
+                        if (it is UiState.Success) it.copy(isLoadingMore = true) else it
+                    }
+                }
                 myRepository.getData(currentPage).collect { data ->
-                    _data.update { it + data.results }
+                    currentData.addAll(data.results)
+                    _uiState.value = UiState.Success(currentData, isLoadingMore = false)
                     currentPage++
                 }
-            } finally {
-                isLoading = false
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error(e.localizedMessage ?: "Unknown error")
             }
         }
     }
