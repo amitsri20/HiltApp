@@ -16,7 +16,7 @@ import javax.inject.Singleton
 object NetworkModule {
 
     @Provides
-    fun provideBaseUrl(): String = "https://rickandmortyapi.com/api/" // replace accordingly
+    fun provideBaseUrl(): String = ""
 
     @Provides
     @Singleton

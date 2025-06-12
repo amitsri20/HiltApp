@@ -11,13 +11,4 @@ import javax.inject.Singleton
 class MyRepository @Inject constructor(
     private val apiService: ApiServiceImpl
 ) {
-    fun getListData(page: Int): Flow<List<Data>> = flow {
-        val data = apiService.getListData(page)
-        emit(data)
-    }
-
-    fun getData(page: Int): Flow<Data> = flow {
-        val data = apiService.getData(page)
-        emit(data)
-    }
 }

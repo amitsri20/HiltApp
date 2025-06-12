@@ -9,22 +9,4 @@ class ApiServiceImpl @Inject constructor(private val apiService: ApiService) : A
     override fun getGreeting(): String {
         return "Hello from Hilt (via Interface)!"
     }
-
-    override suspend fun getListData(page: Int): List<Data> {
-        return try {
-            apiService.getListData(page)
-        } catch (e: Exception) {
-            // Log or handle error
-            emptyList() // or rethrow or wrap
-        }
-    }
-
-    override suspend fun getData(page: Int): Data {
-        return try {
-            apiService.getData(page)
-        } catch (e: Exception) {
-            // Log or handle error
-            return Data(emptyList())
-        }
-    }
 }
