@@ -1,7 +1,10 @@
 package com.example.hiltapp.presentation.ui.components
 
+import android.R.attr.data
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +14,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -41,7 +45,9 @@ fun MainScreen(mainViewModel: MainViewModel) {
             }
             .distinctUntilChanged()
             .collect { lastVisibleItemIndex ->
-                if (uiState is UiState.Success && lastVisibleItemIndex >= (uiState as UiState.Success).data.size - 1) {
+                if (uiState is UiState.Success && !(uiState as UiState.Success<Character>).isLoadingMore
+                    && !(uiState as UiState.Success<Character>).isEndReached
+                    && lastVisibleItemIndex >= (uiState as UiState.Success).data.size - 1) {
                     mainViewModel.loadData()
                 }
             }
@@ -75,12 +81,9 @@ fun MainScreen(mainViewModel: MainViewModel) {
             val state = (uiState as UiState.Success)
             LazyColumn(state = listState) {
                 items(state.data.size) { index ->
-                    Text(
-                        text = state.data[index].name,
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    ItemLayout(state.data[index])
                 }
-                if(state.isLoadingMore){
+                if (state.isLoadingMore) {
                     // Show bottom loading spinner if needed
                     item {
                         Spacer(modifier = Modifier.height(8.dp))
@@ -90,7 +93,7 @@ fun MainScreen(mainViewModel: MainViewModel) {
                                 .padding(16.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            CircularProgressIndicator()
+                            Text(text = "Loading...")
                         }
                     }
                 }
@@ -102,9 +105,34 @@ fun MainScreen(mainViewModel: MainViewModel) {
 @Composable
 private fun Loading(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier.padding(24.dp),
-        contentAlignment = Alignment.Center
+        modifier = modifier
+            .padding(24.dp)
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center,
     ) {
-        CircularProgressIndicator()
+        Row(verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center) {
+            CircularProgressIndicator()
+        }
+    }
+}
+
+@Composable
+private fun ItemLayout(character: Character) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Column {
+            Text(
+                text = character.name,
+                modifier = Modifier.padding(16.dp, 8.dp)
+            )
+            Text(
+                text = character.type,
+                modifier = Modifier.padding(16.dp, 8.dp)
+            )
+        }
     }
 }

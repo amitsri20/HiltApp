@@ -29,22 +29,25 @@ class MainViewModel @Inject constructor(
     }
 
     fun loadData() {
-        _uiState.value = UiState.Loading
+        val currentState = uiState.value
+
+        if(currentPage == 1)
+            _uiState.value = UiState.Loading
+
+        if (currentState is UiState.Success && currentState.isEndReached) return
 
         viewModelScope.launch {
             try {
-                if (_uiState.value is UiState.Loading) {
-                    // Show full-screen loader on initial load
-                } else {
-                    // For subsequent pages
-                    _uiState.update {
-                        if (it is UiState.Success) it.copy(isLoadingMore = true) else it
-                    }
+                if (currentState is UiState.Success) {
+                    _uiState.value = currentState.copy(isLoadingMore = true)
                 }
+
                 myRepository.getData(currentPage).collect { data ->
+                    val isEnd = data.results.isEmpty()
                     currentData.addAll(data.results)
-                    _uiState.value = UiState.Success(currentData, isLoadingMore = false)
-                    currentPage++
+                    _uiState.value = UiState.Success(currentData, isLoadingMore = false, isEndReached = isEnd)
+
+                    if(!isEnd) currentPage++
                 }
             } catch (e: Exception) {
                 _uiState.value = UiState.Error(e.localizedMessage ?: "Unknown error")
