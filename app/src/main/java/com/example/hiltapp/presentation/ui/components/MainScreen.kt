@@ -45,7 +45,8 @@ fun MainScreen(mainViewModel: MainViewModel) {
             }
             .distinctUntilChanged()
             .collect { lastVisibleItemIndex ->
-                if (uiState is UiState.Success && !(uiState as UiState.Success<Character>).isLoadingMore
+                if (uiState is UiState.Success
+                    && !(uiState as UiState.Success<Character>).isLoadingMore
                     && !(uiState as UiState.Success<Character>).isEndReached
                     && lastVisibleItemIndex >= (uiState as UiState.Success).data.size - 1) {
                     mainViewModel.loadData()
