@@ -9,4 +9,8 @@ class ApiServiceImpl @Inject constructor(private val apiService: ApiService) : A
     override fun getGreeting(): String {
         return "Hello from Hilt (via Interface)!"
     }
+
+    override suspend fun getUserData(): List<Data> {
+        return apiService.getUserData()
+    }
 }

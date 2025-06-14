@@ -6,4 +6,7 @@ import retrofit2.http.Query
 
 interface ApiService {
     fun getGreeting(): String
+
+    @GET("users")
+    suspend fun getUserData(): List<Data>
 }

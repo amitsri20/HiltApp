@@ -1,6 +1,9 @@
 package com.example.hiltapp.domain.models
 
 data class Data(
-    val results: List<Any>
+    val id: Int,
+    val name: String,
+    val email: String,
+    val phone: String
 )
 

@@ -24,5 +24,26 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class MainViewModelTest {
+    private lateinit var myRepository: MyRepository
+    private lateinit var mainViewModel: MainViewModel
+    var dispatcher = UnconfinedTestDispatcher()
 
+    @Before
+    fun setUp() {
+        Dispatchers.setMain(dispatcher)
+        myRepository = mockk()
+        mainViewModel = MainViewModel(myRepository)
+    }
+
+    @After
+    fun tearDown()
+    {
+        Dispatchers.resetMain()
+    }
+
+    @Test
+    fun `initially uiState will be empty list`(){
+        val data: List<Data> = emptyList()
+        (mainViewModel.uiState, data)
+    }
 }
